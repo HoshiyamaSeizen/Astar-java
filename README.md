@@ -1,7 +1,5 @@
 <h1> A* Algorithm in Java with GUI</h1>
 
-- - -
-
 <h2> What does the app do?</h2>
 
 The user enters a *weighted directed graph*. The application runs the A* algorithm, visually displays the process of the algorithm *step by step*, finds *the shortest path* from vertex A to vertex B and outputs *its length*.
