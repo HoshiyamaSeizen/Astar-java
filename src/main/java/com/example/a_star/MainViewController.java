@@ -78,7 +78,7 @@ public class MainViewController implements Initializable {
              */
             Scene scene = new Scene(fxmlLoader.load(), 400, 400);
             Stage stage = new Stage();
-            stage.setTitle("New Window");
+            stage.setTitle("About");
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
