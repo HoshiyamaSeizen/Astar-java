@@ -1,38 +1,50 @@
 package com.example.a_star;
 
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Pair;
+import javafx.util.StringConverter;
 
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainViewController implements Initializable {
-    ObservableList list = FXCollections.observableArrayList();
+import static com.example.a_star.Choice.*;
 
+public class MainViewController implements Initializable {
+    Canvas canvas;
+    @FXML
+    private Pane canvasPane;
     @FXML
     private AnchorPane anchorPane;
     @FXML
-    private ChoiceBox<String> actions;
+    private ChoiceBox<Pair<ACTION, String>> actions;
 
     @FXML
-    private  ChoiceBox<String> heuristics;
+    private  ChoiceBox<Pair<HEURISTIC, String>> heuristics;
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
-        System.out.println("Init");
+        actions.setConverter(createStringConverter(actions));
+        actions.getSelectionModel().selectedItemProperty().addListener(createChangeListener(ACTION.NONE));
         actionsLoadData();
-        heuriscticLoadData();
+        heuristics.setConverter(createStringConverter(heuristics));
+        heuristics.getSelectionModel().selectedItemProperty().addListener(createChangeListener(HEURISTIC.NONE));
+        heuristicLoadData();
+        canvas = new Canvas(canvasPane);
     }
 
     @FXML
@@ -41,49 +53,73 @@ public class MainViewController implements Initializable {
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showOpenDialog(new Stage());
-
-        System.out.println(file);
+        canvas.readFromFile(file);
     }
 
-    private void heuriscticLoadData() {
-        heuristics.setValue("Выберите эвристику");
-        list.removeAll(list); // Что бы не случалось повторения
-        list.addAll(
-                "Расстояеие Чебышева",
-                "Манхэттенская метрика",
-                "Евклидово расстояние"
-        );
-        heuristics.getItems().addAll(list);
+    @SuppressWarnings("unchecked")
+    private void heuristicLoadData() {
+        heuristics.setValue(new Pair<>(HEURISTIC.NONE, "Выберите эвристику..."));
+        heuristics.setItems(FXCollections.observableArrayList(
+                new Pair<>(HEURISTIC.CHEBYSHEV, "Расстояние Чебышева"),
+                new Pair<>(HEURISTIC.MANHATTAN, "Манхэттенская метрика"),
+                new Pair<>(HEURISTIC.EUCLID, "Евклидово расстояние")
+        ));
     }
+    @SuppressWarnings("unchecked")
     private void actionsLoadData() {
-        actions.setValue("Выберите действие");
-        list.removeAll(list); // Что бы не случалось повторения
-        list.addAll(
-                "Создать вершину",
-                "Соединить вершины",
-                "Удалить вершину"
-        );
-        actions.getItems().addAll(list);
+        actions.setValue(new Pair<>(ACTION.NONE, "Выберите действие..."));
+        actions.setItems(FXCollections.observableArrayList(
+                new Pair<>(ACTION.ADD, "Создать вершину"),
+                new Pair<>(ACTION.CONNECT, "Соединить вершины"),
+                new Pair<>(ACTION.DELETE, "Удалить вершину/ребро")
+        ));
     }
-
 
     @FXML
-    public void openAboutWindow(ActionEvent event) {
+    private void openAboutWindow() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("about-view.fxml"));
-            /*
-             * if "fx:controller" is not set in fxml
-             * fxmlLoader.setController(NewWindowController);
-             */
             Scene scene = new Scene(fxmlLoader.load(), 400, 400);
             Stage stage = new Stage();
             stage.setTitle("About");
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
-            System.out.println("exception in opening about window" + e);
+            System.out.println("Exception in opening about window" + e);
         }
     }
 
+    private <T> StringConverter<Pair<T, String>> createStringConverter(ChoiceBox<Pair<T, String>> choiceBox){
+        return new StringConverter<>() {
+            @Override
+            public String toString(Pair<T, String> pair) { return pair.getValue(); }
+            @Override
+            public Pair<T, String> fromString(String s) {
+                return choiceBox.getItems().stream().filter(item ->
+                        item.getValue().equals(s)).findFirst().orElse(null);
+            }
+        };
+    }
+
+    private <T> ChangeListener<Pair<T, String>> createChangeListener(T t){
+        return (selected, t1, t2) -> {
+            if(t instanceof ACTION) setAction((ACTION) selected.getValue().getKey());
+            else if(t instanceof HEURISTIC) setHeuristic((HEURISTIC) selected.getValue().getKey());
+        };
+    }
+
+    @FXML
+    private void onCanvasClick(MouseEvent e) {
+        if (e.getSource().equals(canvasPane)) {
+            if (e.getButton() == MouseButton.PRIMARY && getAction() == ACTION.ADD) {
+                canvas.addNode(e.getX(), e.getY());
+            }
+        }
+    }
+
+    @FXML
+    private void clear(){
+        canvas.clear();
+    }
 }
