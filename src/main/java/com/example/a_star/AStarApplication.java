@@ -12,8 +12,8 @@ public class AStarApplication extends Application {
     public void start(Stage stage) throws IOException {
 
         FXMLLoader fxmlLoader = new FXMLLoader(AStarApplication.class.getResource("main-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 500, 500);
-        stage.setTitle("A* visualize");
+        Scene scene = new Scene(fxmlLoader.load(), 1000, 700);
+        stage.setTitle("A* Algorithm Visualizer");
         stage.setScene(scene);
         stage.show();
     }
