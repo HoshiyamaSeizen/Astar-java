@@ -9,8 +9,8 @@ import javafx.scene.text.Text;
 
 public class Edge extends Line {
     private final static int arrowSize = 11;
-    private int startID;
-    private int endID;
+    private final int startID;
+    private final int endID;
     private double startX, startY, endX, endY;
     private Path arrow;
     private Label weightLabel;

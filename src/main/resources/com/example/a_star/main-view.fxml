@@ -9,7 +9,7 @@
         <MenuBar>
             <Menu mnemonicParsing="false" text="File">
                 <MenuItem fx:id="fileChooseButton" mnemonicParsing="false" onAction="#chooseFile" text="Load graph from txt file" />
-            <MenuItem fx:id="saveFileButton" mnemonicParsing="false" onAction="#saveFile" text="Save graph to txt file" />
+                <MenuItem fx:id="saveFileButton" mnemonicParsing="false" onAction="#chooseFile" text="Save graph to txt file" />
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
                 <MenuItem mnemonicParsing="false" onAction="#clear" text="Clear the surface" />
@@ -25,7 +25,7 @@
             <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="89.0" text="End alg" />
         </HBox>
         <StackPane prefHeight="39.0" prefWidth="1000.0">
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Информация для пользователя">
+            <Text fx:id="info" strokeType="OUTSIDE" strokeWidth="0.0" text="Информация для пользователя">
                 <font>
                     <Font size="20.0" />
                 </font>

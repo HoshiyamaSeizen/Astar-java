@@ -2,15 +2,18 @@ package com.example.a_star;
 
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -34,9 +37,10 @@ public class MainViewController implements Initializable {
     private AnchorPane anchorPane;
     @FXML
     private ChoiceBox<Pair<ACTION, String>> actions;
-
     @FXML
     private  ChoiceBox<Pair<HEURISTIC, String>> heuristics;
+    @FXML
+    private Text info;
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
@@ -50,21 +54,15 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    private void chooseFile() {
+    private void chooseFile(ActionEvent e) {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
         File file = fileChooser.showOpenDialog(new Stage());
-        canvas.readFromFile(file);
-    }
-
-    @FXML
-    private void saveFile() {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showSaveDialog(new Stage());
-//        canvas.readFromFile(file);
+        if(file == null) return;
+        MenuItem node = (MenuItem) e.getSource();
+        if(node.getId().equals("fileChooseButton")) canvas.readFromFile(file);
+        else canvas.saveToFile(file);
     }
 
     @SuppressWarnings("unchecked")
@@ -97,7 +95,8 @@ public class MainViewController implements Initializable {
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
-            System.out.println("Exception in opening about window" + e);
+            System.out.println("Error while opening the 'about' window");
+            e.printStackTrace();
         }
     }
 
@@ -133,8 +132,4 @@ public class MainViewController implements Initializable {
     private void clear(){
         canvas.clear();
     }
-
-
-    //Сохранения графа в файл
-
 }

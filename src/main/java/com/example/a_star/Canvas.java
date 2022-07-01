@@ -8,10 +8,7 @@ import javafx.util.Pair;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 import static com.example.a_star.Choice.*;
 
@@ -40,7 +37,7 @@ public class Canvas {
             if(weight > 0) {
                 graph.addEdge(node1, node2, weight);
                 redraw();
-            }
+            }else System.out.println("Weight should be a positive number");
         }
     }
 
@@ -71,7 +68,10 @@ public class Canvas {
         dialog.setTitle(null);
         dialog.setContentText(null);
         dialog.setHeaderText("Enter Weight of the Edge:");
-        return dialog.showAndWait().map(Double::parseDouble).orElse(0.0);
+
+        try{ return dialog.showAndWait().map(Double::parseDouble).orElse(0.0); }
+        catch (NumberFormatException ignored){  }
+        return 0;
     }
 
     private void redraw(){
@@ -81,7 +81,7 @@ public class Canvas {
         Map<Integer, Pair<Double, Double>> verticesInfo = graph.getVerticesInfo();
         Map<Integer, Collection<Pair<Integer, Double>>> edgesInfo = graph.getEdgesInfo();
 
-        redrawEdges(verticesInfo, edgesInfo);
+        redrawEdges(edgesInfo);
         redrawVertices(verticesInfo);
     }
 
@@ -94,29 +94,26 @@ public class Canvas {
         }
     }
 
-    private void redrawEdges(Map<Integer, Pair<Double, Double>> verticesInfo, Map<Integer, Collection<Pair<Integer, Double>>> edgesInfo) {
+    private void redrawEdges(Map<Integer, Collection<Pair<Integer, Double>>> edgesInfo) {
         for(Integer start: edgesInfo.keySet()){
-            Pair<Double, Double> pairS = verticesInfo.get(start);
             Collection<Pair<Integer, Double>> collection;
             if((collection = edgesInfo.get(start)) != null){
-                drawEdges(verticesInfo, start, pairS, collection);
+                drawEdges(start, collection);
             }
         }
     }
 
-    private void drawEdges(Map<Integer, Pair<Double, Double>> verticesInfo, Integer start, Pair<Double, Double> pairS, Collection<Pair<Integer, Double>> collection) {
+    private void drawEdges(Integer start, Collection<Pair<Integer, Double>> collection) {
+        Pair<Double, Double> startPoint = graph.getVertex(start);
         for (Pair<Integer, Double> pair : collection) {
             Integer end = pair.getKey();
             Double weight = pair.getValue();
             if(graph.shouldIgnore(start, end)) continue;
 
-            Pair<Double, Double> pairE = verticesInfo.get(end);
-            double startX = pairS.getKey();
-            double startY = pairS.getValue();
-            double endX = pairE.getKey();
-            double endY = pairE.getValue();
-
-            Edge edge = new Edge(startX, startY, endX, endY, start, end);
+            Pair<Double, Double> endPoint = graph.getVertex(end);
+            Edge edge = new Edge(
+                    startPoint.getKey(), startPoint.getValue(), endPoint.getKey(), endPoint.getValue(),
+                    start, end);
             canvasPane.getChildren().add(edge);
             if(!graph.edgeExists(end, start)){
                 canvasPane.getChildren().add(edge.getArrow());
@@ -135,48 +132,23 @@ public class Canvas {
         redraw();
     }
 
+    @SuppressWarnings("unchecked")
     public void readFromFile(File file) {
         try(Scanner sc = new Scanner(file)){
-            if(!sc.hasNextLine()) throw new Exception("Wrong Format");
+            if(!sc.hasNextLine()) throw new FileFormatException(file);
             String data = sc.nextLine();
-            String[] tmp;
-            int N = Integer.parseInt(data);
-
-            double maxX = 1, maxY = 1;
+            int N;
+            try{
+                if((N = Integer.parseInt(data)) < 0) throw new Exception();
+            }catch (Exception e){ throw new FileFormatException(file, e); }
 
             Pair<Double, Double>[] nodes = new Pair[N];
             Collection<Pair<Integer, Double>>[] edges = new Collection[N];
-            for(int i = 0; i < N; i++){
-                data = sc.nextLine();
-                tmp = data.split(" ");
-                double x = Double.parseDouble(tmp[0]), y = Double.parseDouble(tmp[1]);
-                if(x > maxX) maxX = x;
-                if(y > maxY) maxY = y;
-                nodes[i] = new Pair<>(x, y);
-                if(!sc.hasNextLine()) throw new Exception("Wrong Format");
-            }
-            for(int i = 0; i < N; i++){
-                data = sc.nextLine();
-                tmp = data.split(" ");
-                Collection<Pair<Integer, Double>> collection = new ArrayList<>();
-                for(int j = 0; j < N; j++)
-                    if(i != j && Double.parseDouble(tmp[j]) > 0)
-                        collection.add(new Pair<>(j+1, Double.parseDouble(tmp[j])));
-                if(collection.size()>0)
-                    edges[i] = collection;
-                if(!sc.hasNextLine() && i < N-1) throw new Exception("Wrong Format");
-            }
+            Pair<Double, Double> maxXY = new Pair<>(1.0, 1.0);
 
-            double padding = 40;
-            double width = canvasPane.getWidth() - 2*Node.radius - 2*padding;
-            double height = canvasPane.getHeight() - 2*Node.radius - 2*padding;
-            double scaleX = width/maxX;
-            double scaleY = height/maxY;
-
-            for(int i = 0; i < N; i++) {
-                double x = nodes[i].getKey(), y = nodes[i].getValue();
-                nodes[i] = new Pair<>(x*scaleX+Node.radius+padding, y*scaleY+Node.radius+padding);
-            }
+            maxXY = readNodesFromFile(sc, N, maxXY, nodes, file);
+            readEdgesFromFile(sc, N, edges, file);
+            setProperNodePositions(N, nodes, maxXY);
 
             graph.clear();
             nodesCreated = N;
@@ -184,11 +156,62 @@ public class Canvas {
                 graph.addVertex(i+1, nodes[i]);
             for(int i = 0; i < N; i++)
                 graph.setEdges(i+1, edges[i]);
-        }catch (IOException e){
+        } catch (IOException e){
             e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
+        } catch (FileFormatException e) {
+            System.out.println(e.getMessage());
         }
         redraw();
+    }
+
+    private void setProperNodePositions(int N, Pair<Double, Double>[] nodes, Pair<Double, Double> maxXY) {
+        double padding = 40;
+        double width = canvasPane.getWidth() - 2*Node.radius - 2*padding;
+        double height = canvasPane.getHeight() - 2*Node.radius - 2*padding;
+        double scaleX = width/ maxXY.getKey();
+        double scaleY = height/ maxXY.getValue();
+
+        for(int i = 0; i < N; i++) {
+            double x = nodes[i].getKey(), y = nodes[i].getValue();
+            nodes[i] = new Pair<>(x*scaleX+Node.radius+padding, y*scaleY+Node.radius+padding);
+        }
+    }
+
+    private void readEdgesFromFile(Scanner sc, int N, Collection<Pair<Integer, Double>>[] edges, File file) throws FileFormatException {
+        String[] tmp;
+        for(int i = 0; i < N; i++){
+            if(!sc.hasNextLine() ||
+                    (tmp = sc.nextLine().split(" ")).length != N) throw new FileFormatException(file);
+            Collection<Pair<Integer, Double>> collection = new ArrayList<>();
+            for(int j = 0; j < N; j++) {
+                double weight;
+                try {
+                    if((weight = Double.parseDouble(tmp[j])) < 0) throw new Exception();
+                    if (i != j && weight != 0) collection.add(new Pair<>(j + 1, weight));
+                }catch (Exception e){ throw new FileFormatException(file); }
+            }
+            if(collection.size()>0)
+                edges[i] = collection;
+        }
+    }
+
+    private Pair<Double, Double> readNodesFromFile(Scanner sc, int N, Pair<Double, Double> maxXY, Pair<Double, Double>[] nodes, File file) throws FileFormatException {
+        String[] tmp;
+        for(int i = 0; i < N; i++){
+            if(!sc.hasNextLine() ||
+                    (tmp = sc.nextLine().split(" ")).length != 2) throw new FileFormatException(file);
+            double x, y;
+            try{
+                if((x = Double.parseDouble(tmp[0])) < 0 || (y = Double.parseDouble(tmp[1])) < 0) throw new Exception();
+            }catch (Exception e){ throw new FileFormatException(file, e); }
+
+            maxXY = new Pair<>(Math.max(x, maxXY.getKey()), Math.max(y, maxXY.getValue()));
+            nodes[i] = new Pair<>(x, y);
+        }
+        return maxXY;
+    }
+
+    public void saveToFile(File file) {
+        //TODO: Implement function
     }
 }

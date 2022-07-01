@@ -8,7 +8,6 @@ import java.util.Map;
 
 public class Graph {
     private final Map<Integer, Collection<Pair<Integer, Double>>> edgesInfo;
-
     private final Map<Integer, Pair<Double, Double>> verticesInfo;
     private final Collection<Pair<Integer, Integer>> ignore;
 
@@ -31,6 +30,10 @@ public class Graph {
         verticesInfo.putIfAbsent(id, new Pair<>(x, y));
     }
     public void addVertex(Integer id, Pair<Double, Double> pair){ verticesInfo.putIfAbsent(id, pair); }
+
+    public Pair<Double, Double> getVertex(Integer id){
+        return verticesInfo.get(id);
+    }
 
     public void removeEdge(Integer start, Integer end){
         Collection<Pair<Integer, Double>> collection;
@@ -71,12 +74,10 @@ public class Graph {
         return null;
     }
 
-    public Map<Integer, Collection<Pair<Integer, Double>>> getEdgesInfo() {
-        return edgesInfo;
-    }
-
-    public Map<Integer, Pair<Double, Double>> getVerticesInfo() {
-        return verticesInfo;
+    public Map<Integer, Pair<Double, Double>> getVerticesInfo() { return verticesInfo; }
+    public Map<Integer, Collection<Pair<Integer, Double>>> getEdgesInfo() { return edgesInfo; }
+    public Collection<Pair<Integer, Double>> getEdges(Integer key){
+        return edgesInfo.get(key);
     }
 
     private Pair<Integer, Double> findPair(Integer start, Integer end){
@@ -89,20 +90,14 @@ public class Graph {
         return null;
     }
 
-    public void addIgnore(Integer end, Integer start) {
-        ignore.add(new Pair<>(end, start));
-    }
-
+    public void addIgnore(Integer end, Integer start) { ignore.add(new Pair<>(end, start)); }
     public boolean shouldIgnore(Integer start, Integer end) {
         for (Pair<Integer, Integer> pair : ignore)
             if(pair.getKey().equals(start) && pair.getValue().equals(end))
                 return true;
         return false;
     }
-
-    public void clearIgnore() {
-        ignore.clear();
-    }
+    public void clearIgnore() { ignore.clear(); }
 
     public void clear(){
         edgesInfo.clear();
