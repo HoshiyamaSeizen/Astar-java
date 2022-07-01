@@ -14,8 +14,29 @@ The user enters a *weighted directed graph*. The application runs the A* algorit
 <li>The shortest path from A to B and its length<br/></li>
 
 <h2>App's features</h2>
-<li>Create graph by mouse clicks / import from file (adjacency matrix with weights + nodes coordinates)</li>
+<li>Create graph by mouse clicks / import from file (number of vertices + vertices coordinates + adjacency matrix with weights)</li>
 <li>Heuristic choice: Euclidean distance, Manhattan distance and Chebyshev distance</li>
 <li>Move to the next step in the algorithm and pause during rendering</li>
 <li>Explanatory notes for the user</li>
 <h2>User's Guide</h2>
+<p> Do you need to find the shortest path in a graph from vertex A to vertex B?
+
+Then, **define the graph** in one of two ways:
+a) By *clicking on the window*, choosing the necessary actions: create a vertex, connect vertices, delete a vertex.
+b) *Import the graph from a text file* that should contain the following information about the graph:
+  ~ number of vertices in the graph
+  ~ graph vertex coordinates
+  ~ adjacency matrix of graph with weights
+
+Next, **choose the heuristic** to be used in the A* algorithm:
+a) *Chebyshev distance*
+b) *Manhattan Metric*
+c) *Euclidean distance*
+
+**Press the "Run"** button to run the algorithm.
+**Select the start and end vertex** of the path.
+The algorithm is running.
+You can pause the process of the algorithm and proceed to the next step of the algorithm.
+
+As a result, you will get the shortest path from A to B and the length of this path.
+You can also output the resulting graph along with the results to a text file.</p>

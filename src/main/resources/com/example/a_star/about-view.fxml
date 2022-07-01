@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="290.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.a_star.About">
+<AnchorPane prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.a_star.About">
    <children>
-      <TextFlow prefHeight="306.0" prefWidth="600.0" textAlignment="CENTER" AnchorPane.bottomAnchor="94.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <Text lineSpacing="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="A* Algorithm in Java with GUI&#10;What does the app do?&#10;The user enters a weighted directed graph. The application runs the A* algorithm, visually displays the process of the algorithm step by step, finds the shortest path from vertex A to vertex B and outputs its length.&#10;&#10;Input data&#10;Weighted directed graph (created by mouse clicks / import from file)&#10;Output data&#10;Visualization of the step-by-step process of the A* algorithm&#10;The shortest path from A to B and its length&#10;App's features&#10;Create graph by mouse clicks / import from file (adjacency matrix with weights + nodes coordinates)&#10;Heuristic choice: Euclidean distance, Manhattan distance and Chebyshev distance&#10;Move to the next step in the algorithm and pause during rendering&#10;Explanatory notes for the user">
-               <font>
-                  <Font size="14.0" />
-               </font></Text>
-         </children>
-      </TextFlow>
+      <ScrollPane prefHeight="480.0" prefWidth="440.0">
+        <content>
+            <TextFlow prefHeight="400.0" prefWidth="400.0" textAlignment="CENTER" AnchorPane.bottomAnchor="94.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <children>
+                    <Text lineSpacing="2.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ВИЗУАЛИЗАТОР АЛГОРИТМА А*&#10;Приложение запускает алгоритм для заданного ориентированного взвешенного графа и находит кратчайший путь из вершины А в В, а также его длину.&#10;&#10;Вам нужно найти кратчайший путь в графе из вершины A в вершину B?&#10;&#10;Тогда, задайте граф одним из двух способов:&#10;а) Кликая по окну, выбирая необходимые действия: создать вершину, соединить вершины, удалить вершину.&#10;б) Импортировать граф из файла, в котором должны содержаться следующие сведения о графе:&#10;~количество вершин в графе&#10;~координаты вершин графа&#10;~матрица смежности графа с весами&#10;Далее, выберете эвристику, которая будет использоваться в алгоритме А*:&#10;а) Расстояние Чебышева&#10;б) Манхэттенская метрика&#10;в) Евклидово расстояние&#10;Нажмите кнопку Run для запуска алгоритма.&#10;Выберете начальную и конечную вершину пути.&#10;Алгоритм запущен.&#10;Вы можете ставить процесс работы алгоритма на паузу, а также переходить к следующему шагу работы алгоритма.&#10;&#10;В результате вы получите кратчайший путь из А в В, а также длину этого пути.&#10;Получившийся граф вместе с результатами вы также можете вывести в текстовый файл." wrappingWidth="600.5029296875">
+                        <font>
+                            <Font size="14.0" />
+                        </font></Text>
+                </children>
+            </TextFlow>
+        </content>
+      </ScrollPane>
    </children>
 </AnchorPane>
+
