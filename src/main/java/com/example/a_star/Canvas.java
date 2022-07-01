@@ -85,28 +85,7 @@ public class Canvas {
             Pair<Double, Double> pairS = verticesInfo.get(start);
             Collection<Pair<Integer, Double>> collection;
             if((collection = edgesInfo.get(start)) != null){
-                for (Pair<Integer, Double> pair : collection) {
-                    Integer end = pair.getKey();
-                    Double weight = pair.getValue();
-                    if(graph.shouldIgnore(start, end)) continue;
-
-                    Pair<Double, Double> pairE = verticesInfo.get(end);
-                    double startX = pairS.getKey();
-                    double startY = pairS.getValue();
-                    double endX = pairE.getKey();
-                    double endY = pairE.getValue();
-
-                    Edge edge = new Edge(startX, startY, endX, endY, start, end);
-                    canvasPane.getChildren().add(edge);
-                    if(!graph.edgeExists(end, start)){
-                        canvasPane.getChildren().add(edge.getArrow());
-                        canvasPane.getChildren().add(edge.getLabel(weight, 0));
-                    }else{
-                        canvasPane.getChildren().add(edge.getLabel(weight, graph.getWeight(end, start)));
-                        graph.addIgnore(end, start);
-                    }
-                    edge.setOnMouseClicked(e -> handleEdgeClick(e, edge));
-                }
+                drawEdges(verticesInfo, start, pairS, collection);
             }
         }
         for(Integer id: verticesInfo.keySet()){
@@ -114,6 +93,31 @@ public class Canvas {
             Node node = new Node(id, pair.getKey(), pair.getValue());
             canvasPane.getChildren().add(node);
             node.setOnMouseClicked(e -> handleNodeClick(e, node));
+        }
+    }
+
+    private void drawEdges(Map<Integer, Pair<Double, Double>> verticesInfo, Integer start, Pair<Double, Double> pairS, Collection<Pair<Integer, Double>> collection) {
+        for (Pair<Integer, Double> pair : collection) {
+            Integer end = pair.getKey();
+            Double weight = pair.getValue();
+            if(graph.shouldIgnore(start, end)) continue;
+
+            Pair<Double, Double> pairE = verticesInfo.get(end);
+            double startX = pairS.getKey();
+            double startY = pairS.getValue();
+            double endX = pairE.getKey();
+            double endY = pairE.getValue();
+
+            Edge edge = new Edge(startX, startY, endX, endY, start, end);
+            canvasPane.getChildren().add(edge);
+            if(!graph.edgeExists(end, start)){
+                canvasPane.getChildren().add(edge.getArrow());
+                canvasPane.getChildren().add(edge.getLabel(weight, 0));
+            }else{
+                canvasPane.getChildren().add(edge.getLabel(weight, graph.getWeight(end, start)));
+                graph.addIgnore(end, start);
+            }
+            edge.setOnMouseClicked(e -> handleEdgeClick(e, edge));
         }
     }
 
