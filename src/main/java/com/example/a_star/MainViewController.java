@@ -80,7 +80,7 @@ public class MainViewController implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("about-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 400, 400);
+            Scene scene = new Scene(fxmlLoader.load(), 450, 500);
             Stage stage = new Stage();
             stage.setTitle("About");
             stage.setScene(scene);
