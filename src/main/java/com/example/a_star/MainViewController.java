@@ -18,9 +18,11 @@ import javafx.util.StringConverter;
 
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.a_star.Choice.*;
 
@@ -56,6 +58,15 @@ public class MainViewController implements Initializable {
         canvas.readFromFile(file);
     }
 
+    @FXML
+    private void saveFile() {
+        FileChooser fileChooser = new FileChooser();
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+        fileChooser.getExtensionFilters().add(extFilter);
+        File file = fileChooser.showSaveDialog(new Stage());
+//        canvas.readFromFile(file);
+    }
+
     @SuppressWarnings("unchecked")
     private void heuristicLoadData() {
         heuristics.setValue(new Pair<>(HEURISTIC.NONE, "Выберите эвристику..."));
@@ -76,7 +87,7 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    private void openAboutWindow() {
+    public void openAboutWindow() {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("about-view.fxml"));
@@ -122,4 +133,8 @@ public class MainViewController implements Initializable {
     private void clear(){
         canvas.clear();
     }
+
+
+    //Сохранения графа в файл
+
 }

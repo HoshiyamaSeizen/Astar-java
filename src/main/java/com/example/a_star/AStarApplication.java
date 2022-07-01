@@ -16,6 +16,7 @@ public class AStarApplication extends Application {
         stage.setTitle("A* Algorithm Visualizer");
         stage.setScene(scene);
         stage.show();
+        ((MainViewController) fxmlLoader.getController()).openAboutWindow();
     }
 
     public static void main(String[] args) {
