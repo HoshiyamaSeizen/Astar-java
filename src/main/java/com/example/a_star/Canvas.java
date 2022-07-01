@@ -81,18 +81,26 @@ public class Canvas {
         Map<Integer, Pair<Double, Double>> verticesInfo = graph.getVerticesInfo();
         Map<Integer, Collection<Pair<Integer, Double>>> edgesInfo = graph.getEdgesInfo();
 
+        redrawEdges(verticesInfo, edgesInfo);
+        redrawVertices(verticesInfo);
+    }
+
+    private void redrawVertices(Map<Integer, Pair<Double, Double>> verticesInfo) {
+        for(Integer id: verticesInfo.keySet()){
+            Pair<Double, Double> pair = verticesInfo.get(id);
+            Node node = new Node(id, pair.getKey(), pair.getValue());
+            canvasPane.getChildren().add(node);
+            node.setOnMouseClicked(e -> handleNodeClick(e, node));
+        }
+    }
+
+    private void redrawEdges(Map<Integer, Pair<Double, Double>> verticesInfo, Map<Integer, Collection<Pair<Integer, Double>>> edgesInfo) {
         for(Integer start: edgesInfo.keySet()){
             Pair<Double, Double> pairS = verticesInfo.get(start);
             Collection<Pair<Integer, Double>> collection;
             if((collection = edgesInfo.get(start)) != null){
                 drawEdges(verticesInfo, start, pairS, collection);
             }
-        }
-        for(Integer id: verticesInfo.keySet()){
-            Pair<Double, Double> pair = verticesInfo.get(id);
-            Node node = new Node(id, pair.getKey(), pair.getValue());
-            canvasPane.getChildren().add(node);
-            node.setOnMouseClicked(e -> handleNodeClick(e, node));
         }
     }
 
