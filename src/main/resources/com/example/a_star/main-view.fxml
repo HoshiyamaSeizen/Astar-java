@@ -24,13 +24,16 @@
             <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="71.0" text="Run" onMouseClicked="#run"/>
             <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="89.0" text="End alg" />
         </HBox>
-        <StackPane prefHeight="39.0" prefWidth="1000.0">
+        <HBox alignment="CENTER" prefHeight="39.0" prefWidth="1000.0">
             <Text fx:id="info" strokeType="OUTSIDE" strokeWidth="0.0" text="Информация для пользователя">
                 <font>
                     <Font size="20.0" />
                 </font>
             </Text>
-        </StackPane>
+            <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="64.0" text="Prev"/>
+            <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="64.0" text="Pause"/>
+            <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="64.0" text="Next"/>
+        </HBox>
         <Pane fx:id="canvasPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onMouseClicked="#onCanvasClick" prefHeight="1000.0" prefWidth="400.0" style="-fx-background-color: #cccc99;" />
     </VBox>
 </AnchorPane>
