@@ -53,7 +53,7 @@ public class Graph {
         return findPair(start, end) != null;
     }
 
-    public boolean vertexExists(Integer v){
+    public boolean vertexExists(Object v){
         return verticesInfo.containsKey(v);
     }
 

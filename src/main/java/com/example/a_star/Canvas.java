@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import javafx.util.Pair;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
@@ -167,6 +168,33 @@ public class Canvas {
         }
         redraw();
     }
+    public void writeToFile(File file){
+        try{
+            FileWriter fw=new FileWriter(file);
+
+            fw.write(String.valueOf(graph.getVerticesInfo().keySet().size()));
+            fw.write('\n');
+
+            for (Integer i: graph.getVerticesInfo().keySet()) {
+                if (graph.vertexExists(i)){
+                    fw.write(String.valueOf(graph.getVertex(i).getKey())+ " " + String.valueOf(graph.getVertex(i).getValue()));
+                    fw.write('\n');
+                }
+            }
+
+            for (Integer i: graph.getVerticesInfo().keySet()) {
+                for (Integer j: graph.getVerticesInfo().keySet()) {
+                    fw.write(String.valueOf(graph.getWeight(i, j))+" ");
+                }
+                fw.write('\n');
+            }
+
+            fw.close();
+            System.out.println("Success...");
+        }catch(Exception e){System.out.println(e.getMessage());}
+
+
+    }
 
     private void setProperNodePositions(int N, Pair<Double, Double>[] nodes, Pair<Double, Double> maxXY) {
         double padding = 40;
@@ -215,7 +243,5 @@ public class Canvas {
         return maxXY;
     }
 
-    public void saveToFile(File file) {
-        //TODO: Implement function
-    }
+
 }
