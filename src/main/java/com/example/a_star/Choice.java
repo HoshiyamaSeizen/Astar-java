@@ -2,7 +2,7 @@ package com.example.a_star;
 
 public class Choice {
     enum ACTION { NONE, ADD, CONNECT, DELETE }
-    enum HEURISTIC { NONE, CHEBYSHEV, MANHATTAN, EUCLID }
+    public enum HEURISTIC { NONE, CHEBYSHEV, MANHATTAN, EUCLID }
 
     private static ACTION chosenAction = ACTION.NONE;
     private static HEURISTIC chosenHeuristic = HEURISTIC.NONE;
