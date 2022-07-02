@@ -57,6 +57,13 @@ public class MainViewController implements Initializable {
         System.out.println(graph);
         System.out.println(graph.getVerticesInfo());
         System.out.println(graph.getEdgesInfo());
+        //запускаем алгоритм, вызывая конструктор AStar(), затем получаем поля у экземпляра alg.get...()
+        AStar alg = new AStar(graph,1, 10, HEURISTIC.EUCLID ); //ручками вводила, но по факту нужно достать данные, которые ввел пользователь(граф, стартовая, конечная, эвристика)
+        System.out.println("CountSteps: " + alg.getCountSteps());       //дальше чисто логи, проверки получившихся полей, если не нужно - можно убрать
+        System.out.println("EdgeSteps: " + alg.getEdgeSteps());
+        System.out.println("FinalPath: " + alg.getFinalPath());
+        System.out.println("HeuristicSteps: " + alg.getHeuristicSteps());
+        System.out.println("PathLen: " + alg.getPathLen());
     }
 
     @FXML
