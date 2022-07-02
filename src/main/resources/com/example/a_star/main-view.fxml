@@ -4,11 +4,11 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane fx:id="anchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.a_star.MainViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.a_star.MainViewController">
     <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <MenuBar>
             <Menu mnemonicParsing="false" text="File">
-                <MenuItem fx:id="fileChooseButton" mnemonicParsing="false" onAction="#chooseFile" text="Load graph from txt file" />
+                <MenuItem fx:id="readFileButton" mnemonicParsing="false" onAction="#chooseFile" text="Load graph from txt file" />
                 <MenuItem fx:id="saveFileButton" mnemonicParsing="false" onAction="#chooseFile" text="Save graph to txt file" />
             </Menu>
             <Menu mnemonicParsing="false" text="Edit">
@@ -21,7 +21,7 @@
         <HBox alignment="CENTER" prefHeight="25.0" prefWidth="600.0">
             <ChoiceBox fx:id="actions" prefHeight="24.0" prefWidth="195.0" />
             <ChoiceBox fx:id="heuristics" prefHeight="24.0" prefWidth="216.0" />
-            <Button fx:id="runButton" mnemonicParsing="false" prefHeight="24.0" prefWidth="71.0" text="Run" />
+            <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="71.0" text="Run" onMouseClicked="#run"/>
             <Button mnemonicParsing="false" prefHeight="24.0" prefWidth="89.0" text="End alg" />
         </HBox>
         <StackPane prefHeight="39.0" prefWidth="1000.0">

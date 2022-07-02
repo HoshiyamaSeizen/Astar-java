@@ -23,6 +23,10 @@ public class Canvas {
         nodesCreated = 0;
     }
 
+    public Graph getGraph() {
+        return graph;
+    }
+
     public void addNode(double x, double y){
         if(x > Node.radius && x < canvasPane.getWidth()-Node.radius &&
                 y > Node.radius && y < canvasPane.getHeight()-Node.radius){

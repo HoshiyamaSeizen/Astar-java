@@ -11,7 +11,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -21,11 +20,8 @@ import javafx.util.StringConverter;
 
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.TimeUnit;
 
 import static com.example.a_star.Choice.*;
 
@@ -34,11 +30,13 @@ public class MainViewController implements Initializable {
     @FXML
     private Pane canvasPane;
     @FXML
-    private AnchorPane anchorPane;
-    @FXML
     private ChoiceBox<Pair<ACTION, String>> actions;
     @FXML
     private  ChoiceBox<Pair<HEURISTIC, String>> heuristics;
+    @FXML
+    private MenuItem readFileButton;
+    @FXML
+    private MenuItem saveFileButton;
     @FXML
     private Text info;
 
@@ -54,6 +52,14 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
+    private void run(){
+        Graph graph = canvas.getGraph();
+        System.out.println(graph);
+        System.out.println(graph.getVerticesInfo());
+        System.out.println(graph.getEdgesInfo());
+    }
+
+    @FXML
     private void chooseFile(ActionEvent e) {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
@@ -61,8 +67,8 @@ public class MainViewController implements Initializable {
         File file = fileChooser.showOpenDialog(new Stage());
         if(file == null) return;
         MenuItem node = (MenuItem) e.getSource();
-        if(node.getId().equals("fileChooseButton")) canvas.readFromFile(file);
-        else canvas.saveToFile(file);
+        if(node.equals(readFileButton)) canvas.readFromFile(file);
+        else if(node.equals(saveFileButton)) canvas.saveToFile(file);
     }
 
     @SuppressWarnings("unchecked")
