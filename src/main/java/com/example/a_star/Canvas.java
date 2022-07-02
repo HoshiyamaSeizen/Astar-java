@@ -177,7 +177,7 @@ public class Canvas {
 
             for (Integer i: graph.getVerticesInfo().keySet()) {
                 if (graph.vertexExists(i)){
-                    fw.write(String.valueOf(graph.getVertex(i).getKey())+ " " + String.valueOf(graph.getVertex(i).getValue()));
+                    fw.write(String.valueOf(graph.getVertex(i).getKey() - 40)+ " " + String.valueOf(graph.getVertex(i).getValue()-40));
                     fw.write('\n');
                 }
             }
