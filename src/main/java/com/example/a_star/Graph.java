@@ -9,12 +9,10 @@ import java.util.Map;
 public class Graph {
     private final Map<Integer, Collection<Pair<Integer, Double>>> edgesInfo;
     private final Map<Integer, Pair<Double, Double>> verticesInfo;
-    private final Collection<Pair<Integer, Integer>> ignore;
 
     public Graph(){
         edgesInfo = new HashMap<>();
         verticesInfo = new HashMap<>();
-        ignore = new ArrayList<>();
     }
 
     public void addEdge(Integer start, Integer end, Double weight){
@@ -90,19 +88,9 @@ public class Graph {
         return null;
     }
 
-    public void addIgnore(Integer end, Integer start) { ignore.add(new Pair<>(end, start)); }
-    public boolean shouldIgnore(Integer start, Integer end) {
-        for (Pair<Integer, Integer> pair : ignore)
-            if(pair.getKey().equals(start) && pair.getValue().equals(end))
-                return true;
-        return false;
-    }
-    public void clearIgnore() { ignore.clear(); }
-
     public void clear(){
         edgesInfo.clear();
         verticesInfo.clear();
-        clearIgnore();
     }
 }
 

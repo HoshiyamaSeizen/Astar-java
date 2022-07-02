@@ -15,11 +15,13 @@ import static com.example.a_star.Choice.*;
 public class Canvas {
     private final Pane canvasPane;
     private final Graph graph;
+    private final GraphVisuals visuals;
     private int nodesCreated;
     private Integer selectedNode;
     public Canvas(Pane pane){
         this.canvasPane = pane;
         this.graph = new Graph();
+        this.visuals = new GraphVisuals();
         nodesCreated = 0;
     }
 
@@ -80,7 +82,7 @@ public class Canvas {
 
     private void redraw(){
         canvasPane.getChildren().clear();
-        graph.clearIgnore();
+        visuals.clearIgnore();
 
         Map<Integer, Pair<Double, Double>> verticesInfo = graph.getVerticesInfo();
         Map<Integer, Collection<Pair<Integer, Double>>> edgesInfo = graph.getEdgesInfo();
@@ -112,7 +114,7 @@ public class Canvas {
         for (Pair<Integer, Double> pair : collection) {
             Integer end = pair.getKey();
             Double weight = pair.getValue();
-            if(graph.shouldIgnore(start, end)) continue;
+            if(visuals.shouldIgnore(start, end)) continue;
 
             Pair<Double, Double> endPoint = graph.getVertex(end);
             Edge edge = new Edge(
@@ -124,7 +126,7 @@ public class Canvas {
                 canvasPane.getChildren().add(edge.getLabel(weight, 0));
             }else{
                 canvasPane.getChildren().add(edge.getLabel(weight, graph.getWeight(end, start)));
-                graph.addIgnore(end, start);
+                visuals.addIgnore(end, start);
             }
             edge.setOnMouseClicked(e -> handleEdgeClick(e, edge));
         }
