@@ -3,11 +3,13 @@ package com.example.a_star;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -71,12 +73,16 @@ public class MainViewController implements Initializable {
         FileChooser fileChooser = new FileChooser();
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
         fileChooser.getExtensionFilters().add(extFilter);
-        File file = fileChooser.showOpenDialog(new Stage());
-        if(file == null) return;
         MenuItem node = (MenuItem) e.getSource();
-        if(node.equals(readFileButton)) canvas.readFromFile(file);
-        else if(node.equals(saveFileButton)) canvas.saveToFile(file);
+        File file = null;
+        if (node.equals(readFileButton)) file = fileChooser.showOpenDialog(new Stage());
+        else if (node.equals(saveFileButton)) file = fileChooser.showSaveDialog(new Stage());
+        if (file == null) return;
+        if (node.equals(readFileButton)) canvas.readFromFile(file);
+        else if (node.equals(saveFileButton)) canvas.writeToFile(file);
     }
+
+
 
     @SuppressWarnings("unchecked")
     private void heuristicLoadData() {
