@@ -77,6 +77,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void run(){
+        currentStepNumber = 0;
         setDisableRunningButtons(false);
         Graph graph = canvas.getGraph();
         System.out.println(graph);
@@ -97,6 +98,7 @@ public class MainViewController implements Initializable {
     }
 
     private void setDisableRunningButtons(boolean disableOrNot) {
+
         algIsRunning = !disableOrNot;
         algPauseStatus = !disableOrNot;
         endAlgButton.setDisable(disableOrNot);
