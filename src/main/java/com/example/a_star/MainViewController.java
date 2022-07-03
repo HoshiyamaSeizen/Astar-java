@@ -1,9 +1,12 @@
 package com.example.a_star;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,6 +21,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 
@@ -121,6 +125,9 @@ public class MainViewController implements Initializable {
     public void pauseAlg(){
         algOnPause = true;
 
+    }
+    public boolean getAlgStatus(){
+        return algOnPause;
     }
 
     @FXML
@@ -237,4 +244,7 @@ public class MainViewController implements Initializable {
     private void clear(){
         canvas.clear();
     }
+
+
+
 }
