@@ -34,7 +34,7 @@ public class AStarApplication extends Application {
                             @Override
                             public void handle(ActionEvent event) {
                                 MainViewController mainViewController = fxmlLoader.getController();
-                                if(mainViewController.getAlgStatus()) mainViewController.nextStep();
+                                if(mainViewController.isAlgPauseStatus()) mainViewController.nextStep();
                             }
                         }));
         fiveSecondsWonder.setCycleCount(Timeline.INDEFINITE);

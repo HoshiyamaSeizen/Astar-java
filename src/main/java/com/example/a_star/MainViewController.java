@@ -1,12 +1,8 @@
 package com.example.a_star;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,14 +10,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import javafx.util.Pair;
 import javafx.util.StringConverter;
 
@@ -40,7 +34,7 @@ public class MainViewController implements Initializable {
     boolean chooseButtonHeuriscticClicked = false;
 
     boolean algIsRunning = false;
-    boolean algOnPause = false;
+    boolean algPauseStatus = false;
     int currentStepNumber = 0;
     @FXML
     private Pane canvasPane;
@@ -97,8 +91,14 @@ public class MainViewController implements Initializable {
         System.out.println("PathLen: " + alg.getPathLen());
     }
 
+    @FXML
+    private  void  endAlg(){
+        setDisableRunningButtons(true);
+    }
+
     private void setDisableRunningButtons(boolean disableOrNot) {
         algIsRunning = !disableOrNot;
+        algPauseStatus = !disableOrNot;
         endAlgButton.setDisable(disableOrNot);
         prevStepButton.setDisable(disableOrNot);
         pauseAlgButton.setDisable(disableOrNot);
@@ -111,6 +111,7 @@ public class MainViewController implements Initializable {
     @FXML
     public void nextStep(){
         currentStepNumber++;
+        System.out.println("Next step called");
     }
 
     @FXML
@@ -123,11 +124,12 @@ public class MainViewController implements Initializable {
 
     @FXML
     public void pauseAlg(){
-        algOnPause = true;
+        algPauseStatus = !algPauseStatus;
 
     }
-    public boolean getAlgStatus(){
-        return algOnPause;
+
+    public boolean isAlgPauseStatus(){
+        return algPauseStatus;
     }
 
     @FXML

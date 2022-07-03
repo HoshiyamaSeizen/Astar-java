@@ -22,7 +22,7 @@
             <ChoiceBox fx:id="actions" onAction="#chooseButtonActionsClicked" prefHeight="24.0" prefWidth="195.0" />
             <ChoiceBox fx:id="heuristics" onAction="#chooseButtonHeuriscticClicked" prefHeight="24.0" prefWidth="216.0" />
             <Button fx:id="runAlgButton" disable="true" mnemonicParsing="false" onMouseClicked="#run" prefHeight="24.0" prefWidth="71.0" text="Run" />
-            <Button fx:id="endAlgButton" disable="true" mnemonicParsing="false" prefHeight="24.0" prefWidth="89.0" text="End alg" />
+            <Button fx:id="endAlgButton" disable="true" mnemonicParsing="false" onAction="#endAlg" prefHeight="24.0" prefWidth="89.0" text="End alg" />
         </HBox>
       <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
          <children>
