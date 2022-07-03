@@ -26,9 +26,9 @@
         </HBox>
       <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0">
          <children>
-               <Button fx:id="prevStepButton" disable="true" mnemonicParsing="false" prefHeight="24.0" prefWidth="64.0" text="Prev" />
-               <Button fx:id="pauseAlgButton" disable="true" mnemonicParsing="false" prefHeight="24.0" prefWidth="64.0" text="Pause" />
-               <Button fx:id="nextStepButton" disable="true" mnemonicParsing="false" prefHeight="24.0" prefWidth="64.0" text="Next" />
+               <Button fx:id="prevStepButton" disable="true" mnemonicParsing="false" onAction="#prevStep" prefHeight="24.0" prefWidth="64.0" text="Prev" />
+               <Button fx:id="pauseAlgButton" disable="true" mnemonicParsing="false" onAction="#pauseAlg" prefHeight="24.0" prefWidth="64.0" text="Pause" />
+               <Button fx:id="nextStepButton" disable="true" mnemonicParsing="false" onAction="#nextStep" prefHeight="24.0" prefWidth="64.0" text="Next" />
          </children>
       </HBox>
         <HBox alignment="CENTER" prefHeight="39.0" prefWidth="1000.0">
