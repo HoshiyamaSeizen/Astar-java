@@ -12,43 +12,65 @@ import java.util.Map;
  * This information is used to visualize algorithm on graph
  */
 public class GraphVisuals{
-    private final Collection<Pair<Integer, Integer>> ignore;
-    private final Collection<Pair<Integer, Integer>> visited;
-    private final Collection<Pair<Integer, Integer>> path;
+    private AStar results;
+    private final ArrayList<Pair<Integer, Integer>> ignore;
+    private final ArrayList<Pair<Integer, Integer>> visited;
     private final Map<Integer, Pair<Double, Double>> heuristics;
     private int currentStep;
 
     public GraphVisuals() {
         this.ignore = new ArrayList<>();
         this.visited = new ArrayList<>();
-        this.path = new ArrayList<>();
         this.heuristics = new HashMap<>();
         this.currentStep = 0;
     }
 
-    public void addIgnore(Integer end, Integer start) { ignore.add(new Pair<>(end, start)); }
+    public void setResults(AStar results){
+        this.results = results;
+    }
+
+    public void addIgnore(Integer end, Integer start) {
+        ignore.add(new Pair<>(end, start));
+    }
     public boolean shouldIgnore(Integer start, Integer end) {
         return edgeInCollection(start, end, ignore);
     }
     public void clearIgnore() { ignore.clear(); }
 
-    public void update(int step /*, AStar alg */){
-        //TODO: update collection according to step (step forward of backward)
+    public void update(){
+        int step = Math.min(State.getStep(), results.getCountSteps());
+        if(step > this.currentStep){
+            visited.addAll(results.getEdgeSteps().subList(currentStep, step));
+            for(int i = currentStep; i < step; i++)
+                heuristics.putAll(results.getHeuristicSteps().get(i));
+        }else if(step < this.currentStep){
+            visited.subList(step, currentStep).clear();
+            for(int i = step; i < currentStep; i++) {
+                heuristics.keySet().removeAll(results.getHeuristicSteps().get(i).keySet());
+            }
+        }
+        currentStep = step;
+        if(step == results.getCountSteps()){
+            State.setAlgFinished(true);
+            State.setAlgPaused(true);
+        }
+        State.setAlgFinished(step == results.getCountSteps());
+        State.setAlgPaused(State.isAlgPaused() || State.isAlgFinished());
     }
 
-    public boolean edgeVisited(Integer start, Integer end){
-        return edgeInCollection(start, end, visited);
+    private boolean edgeVisited(Edge edge){
+        return edgeInCollection(edge.getStartID(), edge.getEndID(), visited)
+                || edgeInCollection(edge.getEndID(), edge.getStartID(), visited);
     }
 
-    public boolean edgeInPath(Integer start, Integer end){
-        return  edgeInCollection(start, end, path);
+    private boolean edgeInPath(Edge edge){
+        return (currentStep == results.getCountSteps())
+                && (edgeInCollection(edge.getStartID(), edge.getEndID(), results.getFinalPath())
+                || edgeInCollection(edge.getEndID(), edge.getStartID(), results.getFinalPath()));
     }
 
-    public Map<Integer, Pair<Double, Double>> getHeuristics(){
-        return heuristics;
-    }
-    public Pair<Double, Double> getHeuristicsNode(int id){
-        return heuristics.get(id);
+    private Pair<Double, Double> getHeuristicsNode(Node node){
+        return heuristics.get(node.id());
     }
 
     private boolean edgeInCollection(Integer start, Integer end, Collection<Pair<Integer, Integer>> collection){
@@ -58,10 +80,23 @@ public class GraphVisuals{
         return false;
     }
 
+    public void check(Edge edge){
+        if(edgeInPath(edge))
+            edge.setEdgeStyle("-fx-stroke-width: 3; -fx-stroke: #FFFF00;");
+        else if (edgeVisited(edge))
+            edge.setEdgeStyle("-fx-stroke-width: 2; -fx-stroke: #00FF00;");
+    }
+
+    public void check(Node node){
+        Pair<Double, Double> pair = getHeuristicsNode(node);
+        if(pair != null)
+            node.setLabel(pair.getKey(), pair.getValue());
+    }
+
     public void clear(){
+        results = null;
         currentStep = 0;
         visited.clear();
-        path.clear();
         heuristics.clear();
     }
 }

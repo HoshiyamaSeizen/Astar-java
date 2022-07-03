@@ -19,6 +19,8 @@ public class Canvas {
     private final GraphVisuals visuals;
     private int nodesCreated;
     private Integer selectedNode;
+    private final double padding = 50;
+
     public Canvas(Pane pane){
         this.canvasPane = pane;
         this.graph = new Graph();
@@ -96,7 +98,10 @@ public class Canvas {
         for(Integer id: verticesInfo.keySet()){
             Pair<Double, Double> pair = verticesInfo.get(id);
             Node node = new Node(id, pair.getKey(), pair.getValue());
+            if(State.isAlgRunning())
+                visuals.check(node);
             canvasPane.getChildren().add(node);
+            canvasPane.getChildren().add(node.getLabel());
             node.setOnMouseClicked(e -> handleNodeClick(e, node));
         }
     }
@@ -121,6 +126,8 @@ public class Canvas {
             Edge edge = new Edge(
                     startPoint.getKey(), startPoint.getValue(), endPoint.getKey(), endPoint.getValue(),
                     start, end);
+            if(State.isAlgRunning())
+                visuals.check(edge);
             canvasPane.getChildren().add(edge);
             if(!graph.edgeExists(end, start)){
                 canvasPane.getChildren().add(edge.getArrow());
@@ -170,32 +177,27 @@ public class Canvas {
         }
         redraw();
     }
-    public void writeToFile(File file){
-        try{
-            FileWriter fw=new FileWriter(file);
 
-            fw.write(String.valueOf(graph.getVerticesInfo().keySet().size()));
-            fw.write('\n');
+    public void writeToFile(File file){
+        try (FileWriter fw = new FileWriter(file)){
+            fw.write((graph.getVerticesInfo().keySet().size()) + "\n");
 
             for (Integer i: graph.getVerticesInfo().keySet()) {
                 if (graph.vertexExists(i)){
-                    fw.write(String.valueOf(graph.getVertex(i).getKey() - 40)+ " " + String.valueOf(graph.getVertex(i).getValue()-40));
-                    fw.write('\n');
+                    fw.write((graph.getVertex(i).getKey() - padding) + " " + (graph.getVertex(i).getValue() - padding)+ "\n");
                 }
             }
 
             for (Integer i: graph.getVerticesInfo().keySet()) {
                 for (Integer j: graph.getVerticesInfo().keySet()) {
-                    fw.write(String.valueOf(graph.getWeight(i, j))+" ");
+                    fw.write(graph.getWeight(i, j) +" ");
                 }
                 fw.write('\n');
             }
-            fw.close();
         }catch(Exception e){System.out.println(e.getMessage());}
     }
 
     private void setProperNodePositions(int N, Pair<Double, Double>[] nodes, Pair<Double, Double> maxXY) {
-        double padding = 40;
         double width = canvasPane.getWidth() - 2*Node.radius - 2*padding;
         double height = canvasPane.getHeight() - 2*Node.radius - 2*padding;
         double scaleX = width/ maxXY.getKey();
@@ -241,5 +243,25 @@ public class Canvas {
         return maxXY;
     }
 
+    public void startAlg(AStar results){
+        visuals.setResults(results);
+        visuals.update();
+        redraw();
+    }
 
+    public void algStep(){
+        if(State.isAlgRunning()){
+            visuals.update();
+            redraw();
+        }
+    }
+
+    public boolean hasMinGraph() {
+        return graph.getVerticesInfo().size() > 1;
+    }
+
+    public void stopAlg() {
+        visuals.clear();
+        redraw();
+    }
 }
