@@ -36,6 +36,8 @@ public class MainViewController implements Initializable {
     boolean chooseButtonHeuriscticClicked = false;
 
     boolean algIsRunning = false;
+    boolean algOnPause = false;
+    int currentStepNumber = 0;
     @FXML
     private Pane canvasPane;
     @FXML
@@ -57,6 +59,7 @@ public class MainViewController implements Initializable {
     @FXML
     private Button nextStepButton;
 
+
     @FXML
     private Text info;
 
@@ -70,6 +73,9 @@ public class MainViewController implements Initializable {
         heuristicLoadData();
         canvas = new Canvas(canvasPane);
     }
+
+
+
 
     @FXML
     private void run(){
@@ -97,6 +103,25 @@ public class MainViewController implements Initializable {
         heuristics.setDisable(!disableOrNot);
     }
 
+    
+    @FXML
+    public void nextStep(){
+        currentStepNumber++;
+    }
+
+    @FXML
+    public void prevStep(){
+        currentStepNumber--;
+        currentStepNumber = Math.max(0, currentStepNumber);
+
+
+    }
+
+    @FXML
+    public void pauseAlg(){
+        algOnPause = true;
+
+    }
 
     @FXML
     private void chooseFile(ActionEvent e) {
