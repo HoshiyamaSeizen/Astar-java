@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -28,14 +29,7 @@ import static com.example.a_star.Choice.*;
 
 public class MainViewController implements Initializable {
     Canvas canvas;
-    boolean initChooseButton = true; // необходим ТОЛЬКО для функции chooseButtonClicked
-    boolean chooseButtonClicked = false;
-    boolean initChooseButtonHeurisctic = true; // необходим ТОЛЬКО для функции chooseButtonHeuriscticClicked
-    boolean chooseButtonHeuriscticClicked = false;
 
-    boolean algIsRunning = false;
-    boolean algPauseStatus = false;
-    int currentStepNumber = 0;
     @FXML
     private Pane canvasPane;
     @FXML
@@ -56,8 +50,6 @@ public class MainViewController implements Initializable {
     private Button pauseAlgButton;
     @FXML
     private Button nextStepButton;
-
-
     @FXML
     private Text info;
 
@@ -72,83 +64,81 @@ public class MainViewController implements Initializable {
         canvas = new Canvas(canvasPane);
     }
 
-
-
-
     @FXML
     private void run(){
-        currentStepNumber = 0;
-        setDisableRunningButtons(false);
         Graph graph = canvas.getGraph();
-        System.out.println(graph);
-        System.out.println(graph.getVerticesInfo());
-        System.out.println(graph.getEdgesInfo());
-        //запускаем алгоритм, вызывая конструктор AStar(), затем получаем поля у экземпляра alg.get...()
-        AStar alg = new AStar(graph,1, 10, HEURISTIC.EUCLID ); //ручками вводила, но по факту нужно достать данные, которые ввел пользователь(граф, стартовая, конечная, эвристика)
-        System.out.println("CountSteps: " + alg.getCountSteps());       //дальше чисто логи, проверки получившихся полей, если не нужно - можно убрать
-        System.out.println("EdgeSteps: " + alg.getEdgeSteps());
-        System.out.println("FinalPath: " + alg.getFinalPath());
-        System.out.println("HeuristicSteps: " + alg.getHeuristicSteps());
-        System.out.println("PathLen: " + alg.getPathLen());
+        Pair<Integer, Integer> pair = getStartEndNodes(graph);
+        if(pair != null){
+            setDisableRunningButtons(false);
+            AStar alg = new AStar(graph, pair.getKey(), pair.getValue(), getHeuristic());
+            canvas.startAlg(alg);
+        }
     }
 
     @FXML
-    private  void  endAlg(){
+    private void endAlg() {
         setDisableRunningButtons(true);
+        State.setStep(0);
+        State.setAlgFinished(true);
+        canvas.stopAlg();
     }
 
     private void setDisableRunningButtons(boolean disableOrNot) {
-
-        algIsRunning = !disableOrNot;
-        algPauseStatus = !disableOrNot;
+        State.setAlgRun(!disableOrNot);
+        State.setAlgPaused(disableOrNot);
+        State.setAlgFinished(disableOrNot);
+        runAlgButton.setDisable(!disableOrNot);
         endAlgButton.setDisable(disableOrNot);
-        prevStepButton.setDisable(disableOrNot);
-        pauseAlgButton.setDisable(disableOrNot);
-        nextStepButton.setDisable(disableOrNot);
         actions.setDisable(!disableOrNot);
         heuristics.setDisable(!disableOrNot);
+        checkPrevPauseNextButtons();
     }
 
-    
+    private void checkPrevPauseNextButtons(){
+        nextStepButton.setDisable(State.isAlgFinished() || !State.isAlgPaused() || !State.isAlgRunning());
+        prevStepButton.setDisable(State.getStep() == 0 || !State.isAlgPaused() || !State.isAlgRunning());
+        pauseAlgButton.setDisable(State.isAlgFinished() || !State.isAlgRunning());
+        pauseAlgButton.setText(State.isAlgPaused() ? "Resume" : "Pause");
+    }
+
     @FXML
     public void nextStep(){
-        currentStepNumber++;
-        System.out.println("Next step called");
+        State.next();
+        canvas.algStep();
+        checkPrevPauseNextButtons();
     }
 
     @FXML
     public void prevStep(){
-        currentStepNumber--;
-        currentStepNumber = Math.max(0, currentStepNumber);
-
-
+        State.prev();
+        canvas.algStep();
+        checkPrevPauseNextButtons();
     }
 
     @FXML
     public void pauseAlg(){
-        algPauseStatus = !algPauseStatus;
-
-    }
-
-    public boolean isAlgPauseStatus(){
-        return algPauseStatus;
+        State.toggleAlgPause();
+        checkPrevPauseNextButtons();
     }
 
     @FXML
     private void chooseFile(ActionEvent e) {
-        FileChooser fileChooser = new FileChooser();
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
-        fileChooser.getExtensionFilters().add(extFilter);
-        MenuItem node = (MenuItem) e.getSource();
-        File file = null;
-        if (node.equals(readFileButton)) file = fileChooser.showOpenDialog(new Stage());
-        else if (node.equals(saveFileButton)) file = fileChooser.showSaveDialog(new Stage());
-        if (file == null) return;
-        if (node.equals(readFileButton)) canvas.readFromFile(file);
-        else if (node.equals(saveFileButton)) canvas.writeToFile(file);
+        if(!State.isAlgRunning()) {
+            FileChooser fileChooser = new FileChooser();
+            FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
+            fileChooser.getExtensionFilters().add(extFilter);
+            MenuItem node = (MenuItem) e.getSource();
+            File file;
+            if (node.equals(readFileButton)
+                    && (file = fileChooser.showOpenDialog(new Stage())) != null) {
+                canvas.readFromFile(file);
+                checkRunAvailability();
+            } else if (node.equals(saveFileButton)
+                    && (file = fileChooser.showSaveDialog(new Stage())) != null) {
+                canvas.writeToFile(file);
+            }
+        }
     }
-
-
 
     @SuppressWarnings("unchecked")
     private void heuristicLoadData() {
@@ -200,10 +190,12 @@ public class MainViewController implements Initializable {
     private <T> ChangeListener<Pair<T, String>> createChangeListener(T t){
         return (selected, t1, t2) -> {
             if(t instanceof ACTION) {
-
                 setAction((ACTION) selected.getValue().getKey());
             }
-            else if(t instanceof HEURISTIC) setHeuristic((HEURISTIC) selected.getValue().getKey());
+            else if(t instanceof HEURISTIC) {
+                setHeuristic((HEURISTIC) selected.getValue().getKey());
+                checkRunAvailability();
+            }
         };
     }
 
@@ -214,39 +206,39 @@ public class MainViewController implements Initializable {
                 canvas.addNode(e.getX(), e.getY());
             }
         }
+        checkRunAvailability();
     }
 
-    @FXML
-    private void chooseButtonActionsClicked(){
-
-        if (initChooseButton) {
-            initChooseButton = false;
-            return;
-        }
-        chooseButtonClicked = true;
-        if(chooseButtonHeuriscticClicked){
-            runAlgButton.setDisable(false);
-        }
+    private void checkRunAvailability(){
+        runAlgButton.setDisable(Choice.checkHeuristic(HEURISTIC.NONE) || !canvas.hasMinGraph() || State.isAlgRunning());
     }
 
-    @FXML
-    private void chooseButtonHeuriscticClicked(){
+    private Pair<Integer, Integer> getStartEndNodes(Graph graph) {
+        Integer start = requestNode(1, true);
+        Integer end = requestNode(2, false);
+        if(graph.getVertex(start) == null || graph.getVertex(end) == null){
+            System.out.println("Such node doesn't exist");
+            return null;
+        }
+        return new Pair<>(start, end);
+    }
 
-        if (initChooseButtonHeurisctic) {
-            initChooseButtonHeurisctic = false;
-            return;
-        }
-        chooseButtonHeuriscticClicked = true;
-        if(chooseButtonClicked){
-            runAlgButton.setDisable(false);
-        }
+    private int requestNode(Integer defaultNode, boolean startNode){
+        TextInputDialog dialog = new TextInputDialog(String.valueOf(defaultNode));
+        dialog.setTitle(null);
+        dialog.setContentText(null);
+        dialog.setHeaderText("Введите " + (startNode?"стартовую":"конечную") + " вершину:");
+
+        try{ return dialog.showAndWait().map(Integer::parseUnsignedInt).orElse(0); }
+        catch (NumberFormatException ignored){  }
+        return 0;
     }
 
     @FXML
     private void clear(){
-        canvas.clear();
+        if(!State.isAlgRunning()) {
+            canvas.clear();
+            checkRunAvailability();
+        }
     }
-
-
-
 }
