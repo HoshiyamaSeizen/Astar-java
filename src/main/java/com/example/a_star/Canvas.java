@@ -188,12 +188,8 @@ public class Canvas {
                 }
                 fw.write('\n');
             }
-
             fw.close();
-            System.out.println("Success...");
         }catch(Exception e){System.out.println(e.getMessage());}
-
-
     }
 
     private void setProperNodePositions(int N, Pair<Double, Double>[] nodes, Pair<Double, Double> maxXY) {
