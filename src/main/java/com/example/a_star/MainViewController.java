@@ -191,7 +191,6 @@ public class MainViewController implements Initializable {
         if(chooseButtonHeuriscticClicked){
             runAlgButton.setDisable(false);
         }
-        System.out.println("clicked govno");
     }
 
     @FXML
@@ -205,7 +204,6 @@ public class MainViewController implements Initializable {
         if(chooseButtonClicked){
             runAlgButton.setDisable(false);
         }
-        System.out.println("clicked govno");
     }
 
     @FXML
