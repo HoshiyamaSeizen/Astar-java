@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.MenuItem;
@@ -29,6 +30,12 @@ import static com.example.a_star.Choice.*;
 
 public class MainViewController implements Initializable {
     Canvas canvas;
+    boolean initChooseButton = true; // необходим ТОЛЬКО для функции chooseButtonClicked
+    boolean chooseButtonClicked = false;
+    boolean initChooseButtonHeurisctic = true; // необходим ТОЛЬКО для функции chooseButtonHeuriscticClicked
+    boolean chooseButtonHeuriscticClicked = false;
+
+    boolean algIsRunning = false;
     @FXML
     private Pane canvasPane;
     @FXML
@@ -39,6 +46,17 @@ public class MainViewController implements Initializable {
     private MenuItem readFileButton;
     @FXML
     private MenuItem saveFileButton;
+    @FXML
+    private Button runAlgButton;
+    @FXML
+    private Button endAlgButton;
+    @FXML
+    private Button prevStepButton;
+    @FXML
+    private Button pauseAlgButton;
+    @FXML
+    private Button nextStepButton;
+
     @FXML
     private Text info;
 
@@ -55,6 +73,7 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void run(){
+        setDisableRunningButtons(false);
         Graph graph = canvas.getGraph();
         System.out.println(graph);
         System.out.println(graph.getVerticesInfo());
@@ -67,6 +86,17 @@ public class MainViewController implements Initializable {
         System.out.println("HeuristicSteps: " + alg.getHeuristicSteps());
         System.out.println("PathLen: " + alg.getPathLen());
     }
+
+    private void setDisableRunningButtons(boolean disableOrNot) {
+        algIsRunning = !disableOrNot;
+        endAlgButton.setDisable(disableOrNot);
+        prevStepButton.setDisable(disableOrNot);
+        pauseAlgButton.setDisable(disableOrNot);
+        nextStepButton.setDisable(disableOrNot);
+        actions.setDisable(!disableOrNot);
+        heuristics.setDisable(!disableOrNot);
+    }
+
 
     @FXML
     private void chooseFile(ActionEvent e) {
@@ -133,7 +163,10 @@ public class MainViewController implements Initializable {
 
     private <T> ChangeListener<Pair<T, String>> createChangeListener(T t){
         return (selected, t1, t2) -> {
-            if(t instanceof ACTION) setAction((ACTION) selected.getValue().getKey());
+            if(t instanceof ACTION) {
+
+                setAction((ACTION) selected.getValue().getKey());
+            }
             else if(t instanceof HEURISTIC) setHeuristic((HEURISTIC) selected.getValue().getKey());
         };
     }
@@ -145,6 +178,34 @@ public class MainViewController implements Initializable {
                 canvas.addNode(e.getX(), e.getY());
             }
         }
+    }
+
+    @FXML
+    private void chooseButtonActionsClicked(){
+
+        if (initChooseButton) {
+            initChooseButton = false;
+            return;
+        }
+        chooseButtonClicked = true;
+        if(chooseButtonHeuriscticClicked){
+            runAlgButton.setDisable(false);
+        }
+        System.out.println("clicked govno");
+    }
+
+    @FXML
+    private void chooseButtonHeuriscticClicked(){
+
+        if (initChooseButtonHeurisctic) {
+            initChooseButtonHeurisctic = false;
+            return;
+        }
+        chooseButtonHeuriscticClicked = true;
+        if(chooseButtonClicked){
+            runAlgButton.setDisable(false);
+        }
+        System.out.println("clicked govno");
     }
 
     @FXML
