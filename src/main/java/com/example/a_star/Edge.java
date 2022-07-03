@@ -12,8 +12,8 @@ public class Edge extends Line {
     private final int startID;
     private final int endID;
     private double startX, startY, endX, endY;
-    private Path arrow;
-    private Label weightLabel;
+    private final Path arrow;
+    private final Label label;
 
     Edge(double startX, double startY, double endX, double endY, int start, int end){
         super(startX, startY, endX, endY);
@@ -23,11 +23,11 @@ public class Edge extends Line {
         this.endY = endY;
         this.startID = start;
         this.endID = end;
+        this.arrow = new Path();
+        this.label = new Label();
     }
 
     public Path getArrow(){
-        Path arrow = new Path();
-
         double angle = Math.atan2((endY - startY), (endX - startX)) - Math.PI / 2.0;
         double sin = Math.sin(angle);
         double cos = Math.cos(angle);
@@ -51,9 +51,9 @@ public class Edge extends Line {
 
         String weight = (weightBackward != 0 && weightForward != weightBackward) ?
                 "< " + format(weightBackward) + " | " + format(weightForward) + " >" : format(weightForward);
-        final Text text = new Text(weight);
+        Text text = new Text(weight);
 
-        Label label = new Label(weight);
+        label.setText(weight);
         label.setLayoutX(Math.min(startX, endX)+Math.abs(startX-endX)/2-text.getLayoutBounds().getWidth()/2);
         label.setLayoutY(Math.min(startY,endY)+Math.abs(startY-endY)/2-text.getLayoutBounds().getHeight()/2);
         label.setStyle("-fx-background-color: #fff; -fx-rotate: " + angle);
@@ -73,6 +73,11 @@ public class Edge extends Line {
             return String.format("%d", (long) val);
         else
             return String.format("%s", val);
+    }
+
+    public void setEdgeStyle(String style){
+        this.setStyle(style);
+        if(arrow != null) arrow.setStyle(style);
     }
 }
 
