@@ -29,15 +29,16 @@ public class AStar {
         }
     }
 
-    public Pair<ArrayList<Pair<Integer, Integer>>, Double> buildPath(Map<Integer, Integer> map, Integer end, Graph graph) {
+    public Pair<ArrayList<Pair<Integer, Integer>>, Double> buildPath(Map<Integer, Integer> map, Integer end, Boolean deadlock, Graph graph) {
         ArrayList<Pair<Integer, Integer>> path = new ArrayList<>();
         Double finalWeight = 0.0;
+        if (deadlock) return new Pair<>(path, 0.0);
         while (!end.equals(-1)) {
             Integer tmp = end;
             end = map.get(end);
             if (!end.equals(-1))
                 path.add(new Pair<>(end, tmp));
-            finalWeight += graph.getWeight(end, tmp);
+            if (!deadlock) finalWeight += graph.getWeight(end, tmp);
         }
         ArrayList<Pair<Integer, Integer>> reversePath = new ArrayList<>();
         for (int i = path.size() - 1; i >= 0; i--)
@@ -61,6 +62,8 @@ public class AStar {
 
         Map<Integer, Integer> path = new HashMap<>(); //map хранит пары: вершина - откуда в нее пришли
         path.put(start, -1);
+        Boolean deadlock = false;
+
 
         //start the alg
         while (!heap.isEmpty()) {
@@ -69,6 +72,7 @@ public class AStar {
             Integer prev = pairCurPrev.getValue();
             edgesSteps.add(new Pair<>(prev, current));   //запоминаем ребра, по которым гуляем
             countSteps++;
+            deadlock = false;
 
             if (current.equals(end)) break;
             if (!graph.vertexExists(current)) continue;
@@ -90,10 +94,11 @@ public class AStar {
                     }
                 }
             }
+            else deadlock = true;
             heuristicsSteps.add(adjacentHeur);
         }
         edgesSteps.remove(0);
-        Pair<ArrayList<Pair<Integer, Integer>>, Double> resultsAboutPath = buildPath(path, end, graph);
+        Pair<ArrayList<Pair<Integer, Integer>>, Double> resultsAboutPath = buildPath(path, end, deadlock, graph);
 
         finalPath = resultsAboutPath.getKey();
         pathLen =  resultsAboutPath.getValue();
@@ -109,3 +114,4 @@ public class AStar {
 
 
 }
+
