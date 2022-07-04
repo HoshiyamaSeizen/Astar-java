@@ -3,7 +3,6 @@ package com.example.a_star;
 public class State {
     private static boolean algIsRunning = false;
     private static boolean algIsPaused = true;
-
     private static boolean algFinished = false;
     private static int step = 0;
 

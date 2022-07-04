@@ -8,10 +8,10 @@ public class FileFormatException extends Exception {
     }
 
     public FileFormatException(File file){
-        super("Wrong format of the file: " + file.getAbsolutePath());
+        super("Неверный формат файла: " + file.getName());
     }
 
     public FileFormatException(File file, Throwable t){
-        super("Wrong format of the file: " + file.getAbsolutePath(), t);
+        super("Неверный формат файла: " + file.getName(), t);
     }
 }

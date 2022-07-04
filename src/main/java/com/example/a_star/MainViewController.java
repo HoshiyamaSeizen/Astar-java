@@ -55,13 +55,15 @@ public class MainViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb){
+        canvas = new Canvas(canvasPane);
+        Message.setTextField(info);
         actions.setConverter(createStringConverter(actions));
         actions.getSelectionModel().selectedItemProperty().addListener(createChangeListener(ACTION.NONE));
         actionsLoadData();
         heuristics.setConverter(createStringConverter(heuristics));
         heuristics.getSelectionModel().selectedItemProperty().addListener(createChangeListener(HEURISTIC.NONE));
         heuristicLoadData();
-        canvas = new Canvas(canvasPane);
+        Message.setMsg("Создайте граф при помощи инструментов или импортируйте из файла");
     }
 
     @FXML
@@ -72,6 +74,7 @@ public class MainViewController implements Initializable {
             setDisableRunningButtons(false);
             AStar alg = new AStar(graph, pair.getKey(), pair.getValue(), getHeuristic());
             canvas.startAlg(alg);
+            Message.setMsg("Начало алгоритма");
         }
     }
 
@@ -81,6 +84,7 @@ public class MainViewController implements Initializable {
         State.setStep(0);
         State.setAlgFinished(true);
         canvas.stopAlg();
+        Message.setMsg("Алгоритм остановлен");
     }
 
     private void setDisableRunningButtons(boolean disableOrNot) {
@@ -128,14 +132,16 @@ public class MainViewController implements Initializable {
             FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("TXT files (*.txt)", "*.txt");
             fileChooser.getExtensionFilters().add(extFilter);
             MenuItem node = (MenuItem) e.getSource();
-            File file;
+            File file; boolean res;
             if (node.equals(readFileButton)
                     && (file = fileChooser.showOpenDialog(new Stage())) != null) {
-                canvas.readFromFile(file);
+                res = canvas.readFromFile(file);
                 checkRunAvailability();
+                if(res) chooseMsg("Граф загружен.");
             } else if (node.equals(saveFileButton)
                     && (file = fileChooser.showSaveDialog(new Stage())) != null) {
-                canvas.writeToFile(file);
+                res = canvas.writeToFile(file);
+                if(res) Message.setMsg("Граф сохранён");
             }
         }
     }
@@ -192,10 +198,12 @@ public class MainViewController implements Initializable {
         return (selected, t1, t2) -> {
             if(t instanceof ACTION) {
                 setAction((ACTION) selected.getValue().getKey());
+                chooseMsgAction();
             }
             else if(t instanceof HEURISTIC) {
                 setHeuristic((HEURISTIC) selected.getValue().getKey());
                 checkRunAvailability();
+                chooseMsg(null);
             }
         };
     }
@@ -208,6 +216,12 @@ public class MainViewController implements Initializable {
             }
         }
         checkRunAvailability();
+
+        if(!Message.isError()){
+            if(getAction()!=ACTION.ADD) chooseMsgAction();
+            else chooseMsg(null);
+        }
+        else Message.clearError();
     }
 
     private void checkRunAvailability(){
@@ -218,7 +232,7 @@ public class MainViewController implements Initializable {
         Integer start = requestNode(1, true);
         Integer end = requestNode(2, false);
         if(graph.getVertex(start) == null || graph.getVertex(end) == null){
-            System.out.println("Such node doesn't exist");
+            Message.setError("Пара указанных вершин не существует");
             return null;
         }
         return new Pair<>(start, end);
@@ -235,11 +249,31 @@ public class MainViewController implements Initializable {
         return 0;
     }
 
+    private void chooseMsg(String prev) {
+        if(prev != null && !prev.equals("")) prev += " ";
+        else prev = "";
+
+        if(canvas.hasMinGraph()){
+            Message.setMsg(prev + (
+                    !runAlgButton.isDisabled() ? "Нажмите 'run' для старта алгоритма" : "Выберете эвристику"));
+        }
+        else Message.setMsg(prev + "В графе должно быть минимум две вершины");
+    }
+
+    private void chooseMsgAction(){
+        switch (getAction()){
+            case ADD -> Message.setMsg("Кликните по полотну, чтобы создать вершину");
+            case CONNECT -> Message.setMsg("Кликните по двум вершинам, чтобы соединить их");
+            case DELETE -> Message.setMsg("Кликните по вершине или ребру, чтобы удалить объект");
+        }
+    }
+
     @FXML
     private void clear(){
         if(!State.isAlgRunning()) {
             canvas.clear();
             checkRunAvailability();
+            Message.setMsg("Создайте граф при помощи инструментов или импортируйте из файла");
         }
     }
 }

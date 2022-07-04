@@ -54,6 +54,9 @@ public class GraphVisuals{
             State.setAlgFinished(true);
             State.setAlgPaused(true);
         }
+
+        printInfo();
+
         State.setAlgFinished(step == results.getCountSteps());
         State.setAlgPaused(State.isAlgPaused() || State.isAlgFinished());
     }
@@ -98,5 +101,24 @@ public class GraphVisuals{
         currentStep = 0;
         visited.clear();
         heuristics.clear();
+    }
+
+    private void printInfo() {
+        String res;
+        if(currentStep == 0){
+            res = "Начало алгоритма. Находимся в вершине " + results.getPathEnds().getKey()
+                    + ".\nНеобходимо дойти до вершины " + results.getPathEnds().getValue();
+        }else if(currentStep == results.getCountSteps()){
+            String path = "из вершины " + results.getPathEnds().getKey() + " в вершину " + results.getPathEnds().getValue();
+            res = "Конец алгоритма. Алгоритм был пройден за " + results.getCountSteps() + " шагов.\n"
+                    + (results.getPathLen() > 0 ? "Был найден путь " + path + " длиной " + results.getPathLen()
+                    : "Путь " + path + " не был найден" );
+        }else{
+            res = "Рассматриваем ещё неучтённые соседние вершины: "
+                    + results.getHeuristicSteps().get(currentStep-1).keySet()
+                    + "\nПереходим в вершину с минимальной эврестической оценкой: "
+                    + results.getEdgeSteps().get(currentStep-1).getValue();
+        }
+        Message.setMsg(res);
     }
 }

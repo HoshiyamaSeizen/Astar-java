@@ -46,7 +46,7 @@ public class Canvas {
             if(weight > 0) {
                 graph.addEdge(node1, node2, weight);
                 redraw();
-            }else System.out.println("Weight should be a positive number");
+            }else Message.setError("Вес должен быть числом больше нуля");
         }
     }
 
@@ -76,7 +76,7 @@ public class Canvas {
         TextInputDialog dialog = new TextInputDialog("0");
         dialog.setTitle(null);
         dialog.setContentText(null);
-        dialog.setHeaderText("Enter Weight of the Edge:");
+        dialog.setHeaderText("Введите вес ребра:");
 
         try{ return dialog.showAndWait().map(Double::parseDouble).orElse(0.0); }
         catch (NumberFormatException ignored){  }
@@ -147,7 +147,7 @@ public class Canvas {
     }
 
     @SuppressWarnings("unchecked")
-    public void readFromFile(File file) {
+    public boolean readFromFile(File file) {
         try(Scanner sc = new Scanner(file)){
             if(!sc.hasNextLine()) throw new FileFormatException(file);
             String data = sc.nextLine();
@@ -170,15 +170,18 @@ public class Canvas {
                 graph.addVertex(i+1, nodes[i]);
             for(int i = 0; i < N; i++)
                 graph.setEdges(i+1, edges[i]);
+            redraw();
+            return true;
         } catch (IOException e){
             e.printStackTrace();
         } catch (FileFormatException e) {
-            System.out.println(e.getMessage());
+            Message.setError(e.getMessage());
         }
         redraw();
+        return false;
     }
 
-    public void writeToFile(File file){
+    public boolean writeToFile(File file){
         try (FileWriter fw = new FileWriter(file)){
             fw.write((graph.getVerticesInfo().keySet().size()) + "\n");
 
@@ -194,7 +197,9 @@ public class Canvas {
                 }
                 fw.write('\n');
             }
-        }catch(Exception e){System.out.println(e.getMessage());}
+            return true;
+        }catch(IOException e){ System.out.println(e.getMessage()); }
+        return false;
     }
 
     private void setProperNodePositions(int N, Pair<Double, Double>[] nodes, Pair<Double, Double> maxXY) {
