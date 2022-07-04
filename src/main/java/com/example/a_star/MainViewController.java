@@ -146,7 +146,8 @@ public class MainViewController implements Initializable {
         heuristics.setItems(FXCollections.observableArrayList(
                 new Pair<>(HEURISTIC.CHEBYSHEV, "Расстояние Чебышева"),
                 new Pair<>(HEURISTIC.MANHATTAN, "Манхэттенская метрика"),
-                new Pair<>(HEURISTIC.EUCLID, "Евклидово расстояние")
+                new Pair<>(HEURISTIC.EUCLID, "Евклидово расстояние"),
+                new Pair<>(HEURISTIC.DIJKSTRA, "Нулевая эвристика (Дейкстры)")
         ));
     }
     @SuppressWarnings("unchecked")

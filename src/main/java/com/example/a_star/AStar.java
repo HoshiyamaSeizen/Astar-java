@@ -20,6 +20,7 @@ public class AStar {
                         max(abs(coordsCur.getKey() - coordsEnd.getKey()), abs(coordsCur.getValue() - coordsEnd.getValue()));
                 case MANHATTAN ->
                         abs(coordsCur.getKey() - coordsEnd.getKey()) + abs(coordsCur.getValue() - coordsEnd.getValue());
+                case DIJKSTRA -> 0.0;
                 default -> null;
             };
         }
@@ -38,7 +39,7 @@ public class AStar {
             end = map.get(end);
             if (!end.equals(-1))
                 path.add(new Pair<>(end, tmp));
-            if (!deadlock) finalWeight += graph.getWeight(end, tmp);
+            finalWeight += graph.getWeight(end, tmp);
         }
         ArrayList<Pair<Integer, Integer>> reversePath = new ArrayList<>();
         for (int i = path.size() - 1; i >= 0; i--)
