@@ -73,7 +73,6 @@ public class MainViewController implements Initializable {
         if(pair != null){
             setDisableRunningButtons(false);
             AStar alg = new AStar(graph, pair.getKey(), pair.getValue(), getHeuristic());
-            System.out.println(alg.getCountSteps());
             if(alg.getCountSteps() > 0){
                 canvas.startAlg(alg);
                 Message.setMsg("Начало алгоритма");
