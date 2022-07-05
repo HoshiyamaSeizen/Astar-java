@@ -73,8 +73,14 @@ public class MainViewController implements Initializable {
         if(pair != null){
             setDisableRunningButtons(false);
             AStar alg = new AStar(graph, pair.getKey(), pair.getValue(), getHeuristic());
-            canvas.startAlg(alg);
-            Message.setMsg("Начало алгоритма");
+            System.out.println(alg.getCountSteps());
+            if(alg.getCountSteps() > 0){
+                canvas.startAlg(alg);
+                Message.setMsg("Начало алгоритма");
+            }else{
+                endAlg();
+                Message.setMsg("Пути из начальной вершины не существует");
+            }
         }
     }
 
@@ -113,14 +119,14 @@ public class MainViewController implements Initializable {
     }
 
     @FXML
-    public void prevStep(){
+    private void prevStep(){
         State.prev();
         canvas.algStep();
         checkPrevPauseNextButtons();
     }
 
     @FXML
-    public void pauseAlg(){
+    private void pauseAlg(){
         State.toggleAlgPause();
         checkPrevPauseNextButtons();
     }
@@ -231,8 +237,12 @@ public class MainViewController implements Initializable {
     private Pair<Integer, Integer> getStartEndNodes(Graph graph) {
         Integer start = requestNode(1, true);
         Integer end = requestNode(2, false);
-        if(graph.getVertex(start) == null || graph.getVertex(end) == null){
+        if(graph.getVertex(start) == null || graph.getVertex(end) == null) {
             Message.setError("Пара указанных вершин не существует");
+            return null;
+        }
+        if (start.equals(end)) {
+            Message.setError("Начало не может совпадать с концом");
             return null;
         }
         return new Pair<>(start, end);
