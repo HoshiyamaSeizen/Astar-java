@@ -9,6 +9,7 @@ public class AStar {
     private final ArrayList<Pair<Integer, Integer>> edgesSteps;        //ребра, которые должны подкрашиваться на каждом шаге
     private Double pathLen;                                                 //длина найденного кратчайшего пути
     private Integer countSteps;                                             //количество шагов
+    private final Pair<Integer, Integer> pathEnds;
     private final ArrayList<Pair<Integer, Integer>> finalPath;                    //итоговый кратч.путь - н-р, список ребер [(1,2),(2,3),(3,4)]
 
     public Double computeHeuristic(Choice.HEURISTIC heur, Pair <Double, Double> coordsCur, Pair <Double, Double> coordsEnd) {
@@ -49,6 +50,7 @@ public class AStar {
     }
 
     public AStar(Graph graph, Integer start, Integer end, Choice.HEURISTIC heur) {
+        pathEnds = new Pair<>(start, end);
         heuristicsSteps = new ArrayList<>();
         edgesSteps = new ArrayList<>();
         pathLen = 0.0;
@@ -63,7 +65,7 @@ public class AStar {
 
         Map<Integer, Integer> path = new HashMap<>(); //map хранит пары: вершина - откуда в нее пришли
         path.put(start, -1);
-        Boolean deadlock = false;
+        boolean deadlock = false;
 
 
         //start the alg
@@ -126,8 +128,7 @@ public class AStar {
 
     public ArrayList<Map<Integer, Pair<Double,Double>>> getHeuristicSteps() {return heuristicsSteps; }
     public ArrayList<Pair<Integer, Integer>> getEdgeSteps() {return edgesSteps; }
-
-
+    public Pair<Integer, Integer> getPathEnds() { return pathEnds; }
 }
 
 
