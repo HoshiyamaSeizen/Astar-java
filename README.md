@@ -20,8 +20,19 @@ It will create a folder with the application which you can launch:
 
 <code>./target/AStar/bin/AStar</code>
 
-If instead you just want to build and run the project, you can simply type:
-<code>mvn clean javafx:run</code>
+If instead you just want to build and run the project:
+
+Set JAVA_HOME
+
+<code>export JAVA_HOME=path/to/jdk </code> (e.g., /home/tyoma/.jdks/openjdk-18.0.1.1)
+
+Save changes
+
+<code>source ~/.bash</code> 
+
+Run project
+
+<code>mvn clean javafx:run</code> 
 
 <h2>Input data</h2>
 
