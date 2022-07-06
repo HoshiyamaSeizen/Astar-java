@@ -4,6 +4,25 @@
 
 The user enters a *weighted directed graph*. The application runs the A* algorithm, visually displays the process of the algorithm *step by step*, finds *the shortest path* from vertex A to vertex B and outputs *its length*.
 
+<h2>Installation and launch</h2>
+Make sure you have Maven installed and configured. Then go to the project folder and type the following to create a modular runtime image:
+
+<code>mvn clean javafx:jlink</code>
+
+It will create a folder with the application which you can launch:
+
+<h4> Windows: </h4>
+
+<code>.\target\AStar\bin\AStar.bat</code> (cmd)
+<code>./target/AStar/bin/AStar.bat</code> (PowerShell)
+
+<h4> Linux: </h4>
+
+<code>./target/AStar/bin/AStar</code>
+
+If instead you just want to build and run the project, you can simply type:
+<code>mvn clean javafx:run</code>
+
 <h2>Input data</h2>
 
 <li>Weighted directed graph (created by mouse clicks / import from file)</li>
@@ -25,7 +44,7 @@ Then, **define the graph** in one of two ways:
 a) By *clicking on the window*, choosing the necessary actions: create a vertex, connect vertices, delete a vertex.
 b) *Import the graph from a text file* that should contain the following information about the graph:
   ~ number of vertices in the graph
-  ~ graph vertex coordinates
+  ~ coordinates of the vertices
   ~ adjacency matrix of graph with weights
 
 Next, **choose the heuristic** to be used in the A* algorithm:
