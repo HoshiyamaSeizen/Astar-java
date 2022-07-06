@@ -1,5 +1,5 @@
-import com.example.a_star.Choice;
-import com.example.a_star.Graph;
+package com.example.a_star;
+
 import javafx.util.Pair;
 
 import java.io.File;

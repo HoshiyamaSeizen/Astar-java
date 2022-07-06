@@ -1,4 +1,5 @@
-import com.example.a_star.AStar;
+package com.example.a_star;
+
 import junit.framework.TestCase;
 import org.junit.jupiter.api.*;
 
@@ -15,7 +16,7 @@ public class AStarTest extends TestCase {
     public static void readGraphs() {
         GraphForTest graph;
         for (int i = 1; i <= COUNT_TEST; i++) {
-            graph = new GraphForTest(new File(String.format("./src/test/graphs/%s.txt", i)));
+            graph = new GraphForTest(new File(String.format("src/test/java/com/example/a_star/graphs/%s.txt", i)));
             graphList.add(graph);
         }
         AStar alg;
