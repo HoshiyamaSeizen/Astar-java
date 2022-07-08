@@ -2,6 +2,14 @@
     -fx-font-family: "Comic Sans MS";
 }
 
+.window {
+    -fx-spacing: 10px;
+}
+
+HBox{
+    -fx-spacing: 2px;
+}
+
 Button, ChoiceBox{
     -fx-background-color: #cccc99;
     -fx-border-style: solid;
@@ -11,7 +19,6 @@ Button, ChoiceBox{
     -fx-font-family: "Comic Sans MS";
     -fx-font-size: 16px;
     -fx-pref-width: 100px;
-    -fx-padding: 0 10px;
 }
 
 ChoiceBox{
@@ -19,9 +26,32 @@ ChoiceBox{
 }
 
 Button:hover, ChoiceBox:hover {
-    -fx-background-color: #99994d;
+    -fx-background-color: #bbbb77;
+}
+
+#menuButtonsBox{
+    -fx-alignment: center;
+}
+
+#playButtonsBox{
+    -fx-alignment: top_right;
+    -fx-padding: 0 20px;
+}
+
+#playButtonsBox Button{
+    -fx-padding: 0;
+}
+
+#infoBox{
+    -fx-alignment: center;
 }
 
 #canvasPane{
+    -fx-pref-height: 1000px;
+    -fx-pref-width: 4000px;
     -fx-background-color: #cccc99;
+}
+
+#aboutTextField{
+    -fx-text-alignment: center;
 }

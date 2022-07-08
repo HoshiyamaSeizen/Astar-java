@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -23,6 +24,7 @@ import javafx.util.StringConverter;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static com.example.a_star.Choice.*;
@@ -176,9 +178,10 @@ public class MainViewController implements Initializable {
         try {
             FXMLLoader fxmlLoader = new FXMLLoader();
             fxmlLoader.setLocation(getClass().getResource("about-view.fxml"));
-            Scene scene = new Scene(fxmlLoader.load(), 450, 500);
+            Scene scene = new Scene(fxmlLoader.load(), 560, 530);
             Stage stage = new Stage();
             stage.setTitle("About");
+            stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("icon.png"))));
             stage.setScene(scene);
             stage.show();
         } catch (Exception e) {
