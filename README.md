@@ -5,7 +5,7 @@
 The user enters a *weighted directed graph*. The application runs the A* algorithm, visually displays the process of the algorithm *step by step*, finds *the shortest path* from vertex A to vertex B and outputs *its length*.
 
 <h2>Installation and launch</h2>
-Make sure you have Maven installed and configured. Then go to the project folder and type the following to create a modular runtime image:
+Make sure you have JDK (version 17+) and Maven (version 3.3+) installed and configured. Then go to the project folder and type the following to create a modular runtime image:
 
 <code>mvn clean javafx:jlink</code>
 
@@ -14,6 +14,7 @@ It will create a folder with the application which you can launch:
 <h4> Windows: </h4>
 
 <code>.\target\AStar\bin\AStar.bat</code> (cmd)
+
 <code>./target/AStar/bin/AStar.bat</code> (PowerShell)
 
 <h4> Linux: </h4>
@@ -22,20 +23,12 @@ It will create a folder with the application which you can launch:
 
 If instead you just want to build and run the project:
 
-Set JAVA_HOME
+<code>mvn clean javafx:run</code>
 
-<code>export JAVA_HOME=path/to/jdk </code> (e.g., /home/tyoma/.jdks/openjdk-18.0.1.1)
+<h2>Running tests</h2>
 
-Save changes
-
-<code>source ~/.bash</code> 
-
-Run project
-
-<code>mvn clean javafx:run</code> 
-
-<h2>Run tests</h2>
 After building the project enter the command:
+
 <code>mvn clean tests</code>
 
 <h2>Input data</h2>
@@ -74,3 +67,11 @@ You can pause the process of the algorithm and proceed to the next step of the a
 
 As a result, you will get the shortest path from A to B and the length of this path.
 You can also output the resulting graph along with the results to a text file.</p>
+
+<h2>Possible problems</h2>
+
+If you have problems with building the project, the issue may be as follows:
+
+- Wrong JDK version (should be at least JDK 17)
+- Wrong Maven version (should be at least Maven 3.3)
+- Maven not properly configured (`\maven\bin\` path should be added to `PATH` environment variable, and `JAVA_HOME` variable should be set to the `\jdk` path of the <b>suitable</b> JDK version)
