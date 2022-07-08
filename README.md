@@ -34,6 +34,10 @@ Run project
 
 <code>mvn clean javafx:run</code> 
 
+<h2>Run tests</h2>
+After building the project enter the command:
+<code>mvn clean tests</code>
+
 <h2>Input data</h2>
 
 <li>Weighted directed graph (created by mouse clicks / import from file)</li>
