@@ -18,7 +18,7 @@ public class GraphTest extends TestCase {
     public static void readGraphs() {
         GraphForTest graph;
         for (int i = 1; i <= COUNT_TEST; i++) {
-            graph = new GraphForTest(new File(String.format("./src/test/com/example/a_star/graphs/%s.txt", i)));
+            graph = new GraphForTest(new File(String.format("./src/test/java/com/example/a_star/graphs/%s.txt", i)));
             graphList.add(graph);
         }
     }
